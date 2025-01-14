@@ -43,6 +43,9 @@ export default function TabelaPedidosCustomizada() {
                                 <tr>
                                     <TableCell>N° Pedido</TableCell>
                                     <TableCell>Loja</TableCell>
+                                    <TableCell>Cliente</TableCell>
+                                    <TableCell>Email</TableCell>
+                                    <TableCell>Telefone</TableCell>
                                     <TableCell>Quantidade</TableCell>
                                     <TableCell>Endereço</TableCell>
                                     <TableCell>Valor</TableCell>
@@ -55,6 +58,9 @@ export default function TabelaPedidosCustomizada() {
                                     <tr key={order._id}>
                                         <TableCell>{order.invoice}</TableCell>
                                         <TableCell>{order.dynamicDescriptor}</TableCell>
+                                        <TableCell>{order.fullName}</TableCell>
+                                        <TableCell>{order.email}</TableCell>
+                                        <TableCell>{order.phone}</TableCell>
                                         <TableCell>{order.merchantTrns}</TableCell>
                                         <TableCell>{order.customerTrns}</TableCell>
                                         <TableCell>{order.amount}</TableCell>
