@@ -5,6 +5,8 @@ export default function useTabelaPedidosCustomizados() {
     const [selectedAddress, setSelectedAddress] = useState("");
     const [isClientModalOpen, setIsClientModalOpen] = useState(false);
     const [selectedClient, setSelectedClient] = useState(null);
+    const [isOrderModalOpen, setIsOrderModalOpen] = useState(false);
+    const [selectedOrder, setSelectedOrder] = useState(null);
 
     // Função para abrir o modal de endereço
     const handleOpenAddressModal = (address) => {
@@ -27,6 +29,18 @@ export default function useTabelaPedidosCustomizados() {
     const handleCloseClientModal = () => {
         setIsClientModalOpen(false);
     };
+
+    // Função para abrir o modal do pedido
+    const handleOpenOrderModal = (order) => {
+        setSelectedOrder(order);
+        setIsOrderModalOpen(true);
+    };
+
+    //Funcao para fechar o modal do pedido
+    const handleCloseOrderModal = () => {
+        setIsOrderModalOpen(false);
+    };
+
 
     // Função para determinar a classe CSS do status
     const getStatusColor = (status) => {
@@ -71,6 +85,10 @@ export default function useTabelaPedidosCustomizados() {
         getStatusColor,
         formatDate,
         handleOpenClientModal,
-        handleCloseClientModal
-    }
+        handleCloseClientModal,
+        isOrderModalOpen,
+        selectedOrder,
+        handleOpenOrderModal,
+        handleCloseOrderModal
+    };
 }

@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React from "react";
 import { FaUserAlt } from "react-icons/fa"; // Importe o ícone de usuário
 import NotFound from "../table/NotFound";
 import useVivaWallet from "@/hooks/vivawallet/useVivaWallet";
 import { BsFillHouseAddFill } from "react-icons/bs";
+import { FaShoppingCart } from "react-icons/fa"
 import useTabelaPedidosCustomizados from "@/hooks/tabelapedidos/useTabelaPedidosCustomizados";
 import { Table, TableCell, TableContainer, TableBody, TableHeader, Button, Modal, ModalHeader, ModalBody, ModalFooter } from "@windmill/react-ui";
 
@@ -20,6 +21,10 @@ export default function TabelaPedidosCustomizada() {
         handleCloseClientModal,
         handleOpenAddressModal,
         handleOpenClientModal,
+        handleOpenOrderModal,
+        handleCloseOrderModal,
+        selectedOrder,
+        isOrderModalOpen
     } = useTabelaPedidosCustomizados();
 
     React.useEffect(() => {
@@ -34,10 +39,9 @@ export default function TabelaPedidosCustomizada() {
                         <Table>
                             <TableHeader>
                                 <tr>
-                                    <TableCell>Pedido</TableCell>
+                                    <TableCell>Pedidos</TableCell>
                                     <TableCell>Data</TableCell>
                                     <TableCell>Loja</TableCell>
-                                    <TableCell>Quantidade</TableCell>
                                     <TableCell>Valor</TableCell>
                                     <TableCell>Cliente</TableCell>
                                     <TableCell>Endereço</TableCell>
@@ -47,10 +51,16 @@ export default function TabelaPedidosCustomizada() {
                             <TableBody>
                                 {allOrders.map((order) => (
                                     <tr key={order._id}>
-                                        <TableCell>{order.invoice}</TableCell>
+                                        <TableCell>
+                                            <Button
+                                                onClick={() => handleOpenOrderModal(order)}
+                                                icon={FaShoppingCart}
+                                                aria-label="Order Details"
+                                                size="small"
+                                            />
+                                        </TableCell>
                                         <TableCell>{formatDate(order.createdAt)}</TableCell>
                                         <TableCell>{order.dynamicDescriptor}</TableCell>
-                                        <TableCell>{order.merchantTrns}</TableCell>
                                         <TableCell>{formatEuro(order.amount)}</TableCell>
                                         <TableCell>
                                             <Button
@@ -116,6 +126,22 @@ export default function TabelaPedidosCustomizada() {
                 </ModalBody>
                 <ModalFooter>
                     <Button onClick={handleCloseClientModal}>Fechar</Button>
+                </ModalFooter>
+            </Modal>
+            <Modal isOpen={isOrderModalOpen} onClose={handleCloseOrderModal}>
+                <ModalHeader>Detalhes do Pedido</ModalHeader>
+                <ModalBody>
+                    {selectedOrder && (
+                        <>
+                            <p><strong>N° do Pedido:</strong> {selectedOrder.invoice}</p>
+                            <p><strong>Produtos:</strong> {selectedOrder.merchantTrns.split("-").join(", ")}</p>
+                            <p><strong>Quantidade:</strong> {selectedOrder.merchantTrns.split("-").length}</p>
+                            <p><strong>Loja:</strong> {selectedOrder.dynamicDescriptor}</p>
+                        </>
+                    )}
+                </ModalBody>
+                <ModalFooter>
+                    <Button onClick={handleCloseOrderModal}>Fechar</Button>
                 </ModalFooter>
             </Modal>
         </div>
