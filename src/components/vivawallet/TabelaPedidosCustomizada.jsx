@@ -24,6 +24,15 @@ export default function TabelaPedidosCustomizada() {
         }
     };
 
+    // converter data para formato dd/mm/aaaa
+    const formatDate = (dateString) => {
+        const date = new Date(dateString);
+        const day = date.getDate().toString().padStart(2, "0");
+        const month = (date.getMonth() + 1).toString().padStart(2, "0");
+        const year = date.getFullYear();
+        return `${day}/${month}/${year}`;
+    };
+
     return (
         <div className="overflow-x-auto relative shadow-md sm:rounded-lg">
             <div className="p-4">
@@ -33,23 +42,23 @@ export default function TabelaPedidosCustomizada() {
                             <TableHeader>
                                 <tr>
                                     <TableCell>N° Pedido</TableCell>
-                                    <TableCell>Nome</TableCell>
-                                    <TableCell>Telefone</TableCell>
-                                    <TableCell>Email</TableCell>
+                                    <TableCell>Loja</TableCell>
+                                    <TableCell>Quantidade</TableCell>
                                     <TableCell>Endereço</TableCell>
                                     <TableCell>Valor</TableCell>
                                     <TableCell>Status</TableCell>
+                                    <TableCell>Data</TableCell>
                                 </tr>
                             </TableHeader>
                             <TableBody>
                                 {allOrders.map((order) => (
                                     <tr key={order._id}>
                                         <TableCell>{order.invoice}</TableCell>
-                                        <TableCell>{order.customer?.fullName}</TableCell>
-                                        <TableCell>{order.customer?.phone}</TableCell>
-                                        <TableCell>{order.customer?.email}</TableCell>
-                                        <TableCell>{order.klarnaOrderOptions?.billingAddress?.streetAddress}</TableCell>
+                                        <TableCell>{order.customerTrns}</TableCell>
+                                        <TableCell>{order.merchantTrns}</TableCell>
+                                        <TableCell>{order.dynamicDescriptor}</TableCell>
                                         <TableCell>{order.amount}</TableCell>
+                                        <TableCell>{formatDate(order.createdAt)}</TableCell>
                                         <TableCell>
                                             <span
                                                 className={`text-xs font-medium mr-2 px-2.5 py-0.5 rounded ${getStatusColor(
