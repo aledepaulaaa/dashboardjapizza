@@ -1,37 +1,30 @@
-import React from "react";
-import useVivaWallet from "@/hooks/vivawallet/useVivaWallet";
+import React, { useState } from "react";
+import { FaUserAlt } from "react-icons/fa"; // Importe o ícone de usuário
 import NotFound from "../table/NotFound";
-import { Table, TableCell, TableContainer, TableBody, TableHeader } from "@windmill/react-ui";
+import useVivaWallet from "@/hooks/vivawallet/useVivaWallet";
+import { BsFillHouseAddFill } from "react-icons/bs";
+import useTabelaPedidosCustomizados from "@/hooks/tabelapedidos/useTabelaPedidosCustomizados";
+import { Table, TableCell, TableContainer, TableBody, TableHeader, Button, Modal, ModalHeader, ModalBody, ModalFooter } from "@windmill/react-ui";
 
 export default function TabelaPedidosCustomizada() {
     const { allOrders, getAllOrders } = useVivaWallet();
+    const {
+        isAddressModalOpen,
+        isClientModalOpen,
+        selectedAddress,
+        selectedClient,
+        formatDate,
+        formatEuro,
+        getStatusColor,
+        handleCloseAddressModal,
+        handleCloseClientModal,
+        handleOpenAddressModal,
+        handleOpenClientModal,
+    } = useTabelaPedidosCustomizados();
 
     React.useEffect(() => {
         getAllOrders();
     }, []);
-
-    // Função para determinar a classe CSS do status
-    const getStatusColor = (status) => {
-        switch (status) {
-            case "Pago":
-                return "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300"; // Azul para "Pago"
-            case "Pendente":
-                return "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300"; // Amarelo para "Pendente"
-            case "Cancelado":
-                return "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300"; // Vermelho para "Cancelado"
-            default:
-                return "bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300"
-        }
-    };
-
-    // converter data para formato dd/mm/aaaa
-    const formatDate = (dateString) => {
-        const date = new Date(dateString);
-        const day = date.getDate().toString().padStart(2, "0");
-        const month = (date.getMonth() + 1).toString().padStart(2, "0");
-        const year = date.getFullYear();
-        return `${day}/${month}/${year}`;
-    };
 
     return (
         <div className="overflow-x-auto relative shadow-md sm:rounded-lg">
@@ -42,14 +35,12 @@ export default function TabelaPedidosCustomizada() {
                             <TableHeader>
                                 <tr>
                                     <TableCell>N° Pedido</TableCell>
-                                    <TableCell>Loja</TableCell>
-                                    <TableCell>Cliente</TableCell>
-                                    <TableCell>Email</TableCell>
-                                    <TableCell>Telefone</TableCell>
-                                    <TableCell>Quantidade</TableCell>
-                                    <TableCell>Endereço</TableCell>
-                                    <TableCell>Valor</TableCell>
                                     <TableCell>Data</TableCell>
+                                    <TableCell>Loja</TableCell>
+                                    <TableCell>Quantidade</TableCell>
+                                    <TableCell>Valor</TableCell>
+                                    <TableCell>Cliente</TableCell>
+                                    <TableCell>Endereço</TableCell>
                                     <TableCell>Status</TableCell>
                                 </tr>
                             </TableHeader>
@@ -57,14 +48,32 @@ export default function TabelaPedidosCustomizada() {
                                 {allOrders.map((order) => (
                                     <tr key={order._id}>
                                         <TableCell>{order.invoice}</TableCell>
-                                        <TableCell>{order.dynamicDescriptor}</TableCell>
-                                        <TableCell>{order.fullName}</TableCell>
-                                        <TableCell>{order.email}</TableCell>
-                                        <TableCell>{order.phone}</TableCell>
-                                        <TableCell>{order.merchantTrns}</TableCell>
-                                        <TableCell>{order.customerTrns}</TableCell>
-                                        <TableCell>{order.amount}</TableCell>
                                         <TableCell>{formatDate(order.createdAt)}</TableCell>
+                                        <TableCell>{order.dynamicDescriptor}</TableCell>
+                                        <TableCell>{order.merchantTrns}</TableCell>
+                                        <TableCell>{formatEuro(order.amount)}</TableCell>
+                                        <TableCell>
+                                            <Button
+                                                icon={FaUserAlt}
+                                                aria-label="Client Details"
+                                                size="small"
+                                                onClick={() =>
+                                                    handleOpenClientModal({
+                                                        fullName: order.fullName,
+                                                        email: order.email,
+                                                        phone: order.phone,
+                                                    })
+                                                }
+                                            />
+                                        </TableCell>
+                                        <TableCell>
+                                            <Button
+                                                onClick={() => handleOpenAddressModal(order.customerTrns)}
+                                                icon={BsFillHouseAddFill}
+                                                aria-label="Address Details"
+                                                size="small"
+                                            />
+                                        </TableCell>
                                         <TableCell>
                                             <span
                                                 className={`text-xs font-medium mr-2 px-2.5 py-0.5 rounded ${getStatusColor(
@@ -85,6 +94,30 @@ export default function TabelaPedidosCustomizada() {
                     </div>
                 )}
             </div>
+            <Modal isOpen={isAddressModalOpen} onClose={handleCloseAddressModal}>
+                <ModalHeader>Detalhes do Endereço</ModalHeader>
+                <ModalBody>
+                    <p>{selectedAddress}</p>
+                </ModalBody>
+                <ModalFooter>
+                    <Button onClick={handleCloseAddressModal}>Fechar</Button>
+                </ModalFooter>
+            </Modal>
+            <Modal isOpen={isClientModalOpen} onClose={handleCloseClientModal}>
+                <ModalHeader>Detalhes do Cliente</ModalHeader>
+                <ModalBody>
+                    {selectedClient && (
+                        <>
+                            <p><strong>Nome:</strong> {selectedClient.fullName}</p>
+                            <p><strong>Email:</strong> {selectedClient.email}</p>
+                            <p><strong>Telefone:</strong> {selectedClient.phone}</p>
+                        </>
+                    )}
+                </ModalBody>
+                <ModalFooter>
+                    <Button onClick={handleCloseClientModal}>Fechar</Button>
+                </ModalFooter>
+            </Modal>
         </div>
     );
 }
