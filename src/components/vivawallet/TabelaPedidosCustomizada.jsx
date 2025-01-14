@@ -46,17 +46,17 @@ export default function TabelaPedidosCustomizada() {
                                     <TableCell>Quantidade</TableCell>
                                     <TableCell>Endereço</TableCell>
                                     <TableCell>Valor</TableCell>
-                                    <TableCell>Status</TableCell>
                                     <TableCell>Data</TableCell>
+                                    <TableCell>Status</TableCell>
                                 </tr>
                             </TableHeader>
                             <TableBody>
                                 {allOrders.map((order) => (
                                     <tr key={order._id}>
                                         <TableCell>{order.invoice}</TableCell>
-                                        <TableCell>{order.customerTrns}</TableCell>
-                                        <TableCell>{order.merchantTrns}</TableCell>
                                         <TableCell>{order.dynamicDescriptor}</TableCell>
+                                        <TableCell>{order.merchantTrns}</TableCell>
+                                        <TableCell>{order.customerTrns}</TableCell>
                                         <TableCell>{order.amount}</TableCell>
                                         <TableCell>{formatDate(order.createdAt)}</TableCell>
                                         <TableCell>
