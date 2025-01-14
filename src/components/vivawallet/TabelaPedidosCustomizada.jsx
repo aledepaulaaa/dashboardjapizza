@@ -34,7 +34,7 @@ export default function TabelaPedidosCustomizada() {
                         <Table>
                             <TableHeader>
                                 <tr>
-                                    <TableCell>N° Pedido</TableCell>
+                                    <TableCell>Pedido</TableCell>
                                     <TableCell>Data</TableCell>
                                     <TableCell>Loja</TableCell>
                                     <TableCell>Quantidade</TableCell>
